@@ -1,17 +1,14 @@
 from datetime import datetime
-from sqlalchemy import (
-    Column,
-    Integer,
-    Text,
-    String,
-    Boolean,
-    DateTime,
-    ForeignKey,
-    Date,
-)
-from sqlalchemy.orm import relationship
 
 from db.base_class import Base
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import Text
+from sqlalchemy.orm import relationship
 
 
 class Blog(Base):
