@@ -14,3 +14,10 @@ def create_new_blog(blog: CreateBlog, db: Session, author_id: int):
 def retrieve_blog(id: int, db: Session):
     blog = db.query(Blog).filter(Blog.id == id).first()
     return blog
+
+
+def list_blogs(skip: int, limit: int, db: Session):
+    blogs = (
+        db.query(Blog).filter(Blog.is_active == True).offset(skip).limit(limit).all()
+    )
+    return blogs
