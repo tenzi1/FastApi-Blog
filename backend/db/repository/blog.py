@@ -24,10 +24,12 @@ def list_blogs(skip: int, limit: int, db: Session):
     return blogs
 
 
-def update_blog(id: int, blog: UpdateBlog, db: Session):
+def update_blog(id: int, blog: UpdateBlog, author_id: int, db: Session):
     blog_in_db = db.query(Blog).filter(Blog.id == id).first()
     if not blog_in_db:
-        return
+        return {"error": f"blog with id {id} does not exist."}
+    if not blog_in_db.author_id == author_id:
+        return {"error": "Only the author cann modify the blog."}
     blog_in_db.title = blog.title
     blog_in_db.content = blog.content
     db.add(blog_in_db)
@@ -36,10 +38,12 @@ def update_blog(id: int, blog: UpdateBlog, db: Session):
     return blog_in_db
 
 
-def delete_blog(id: int, db: Session):
+def delete_blog(id: int, author_id: int, db: Session):
     blog_in_db = db.query(Blog).filter(Blog.id == id)
     if not blog_in_db:
         return {"error": f"Could not find blog with id {id}"}
+    if not blog_in_db.author_id == author_id:
+        return {"error": "Only the author can delete a blog"}
     blog_in_db.delete()
     db.commit()
     return {"message": f"Successfully deleted blog with id {id}"}
