@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block content %}
+{% with alert=alert %}
+{% include "components/alert.html" %}
+{% endwith %}
 <div class="container">
     <h2 class="text-muted">All Blogs</h2>
     <div class="row justify-content-center">
