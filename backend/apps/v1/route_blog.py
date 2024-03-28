@@ -5,6 +5,7 @@ from db.repository.blog import create_new_blog
 from db.repository.blog import delete_blog
 from db.repository.blog import list_blogs
 from db.repository.blog import retrieve_blog
+from db.repository.blog import update_blog
 from db.session import get_db
 from fastapi import APIRouter
 from fastapi import Depends
@@ -15,6 +16,7 @@ from fastapi import status
 from fastapi.security.utils import get_authorization_scheme_param
 from fastapi.templating import Jinja2Templates
 from schemas.blog import CreateBlog
+from schemas.blog import UpdateBlog
 from sqlalchemy.orm import Session
 
 
@@ -83,11 +85,44 @@ def delete_a_blog(request: Request, id: int, db: Session = Depends(get_db)):
     _, token = get_authorization_scheme_param(token)
     try:
         author = get_current_user(token=token, db=db)
-        print("herererererer")
         msg = delete_blog(id=id, author_id=author.id, db=db)
-        print("message", msg)
         alert = msg.get("error") or msg.get("message")
-        print("alert")
+        return responses.RedirectResponse(
+            f"/?alert={alert}", status_code=status.HTTP_302_FOUND
+        )
+    except Exception:
+        blog = retrieve_blog(id=id, db=db)
+        return templates.TemplateResponse(
+            "blog/detail.html",
+            {"request": request, "alert": "Please login again", "blog": blog},
+        )
+
+
+@router.get("/update/{id}")
+def get_blog_update_form(
+    request: Request,
+    id: int,
+    db: Session = Depends(get_db),
+):
+    blog = retrieve_blog(id=id, db=db)
+    return templates.TemplateResponse(request, "blog/update_blog.html", {"blog": blog})
+
+
+@router.post("/update/{id}")
+def update_a_blog(
+    request: Request,
+    id: int,
+    title: str = Form(...),
+    content: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    token = request.cookies.get("access_token")
+    _, token = get_authorization_scheme_param(token)
+    try:
+        author = get_current_user(token=token, db=db)
+        blog = UpdateBlog(title=title, content=content)
+        blog = update_blog(id=id, blog=blog, author_id=author.id, db=db)
+        alert = "Successfully updated" if not blog.get("error") else blog.get("error")
         return responses.RedirectResponse(
             f"/?alert={alert}", status_code=status.HTTP_302_FOUND
         )

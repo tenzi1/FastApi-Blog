@@ -12,7 +12,8 @@
         </h1>
         <small class="text-muted">Publish Date: {{ blog.created_at.strftime('%Y-%m-%d')}}</small>
         <p class="text-secondary my-4">{{ blog.content }}</p>
-        <a href="/delete/{{blog.id}}" class="btn btn-outline-danger">Delete</a>
+        <a href="/update/{{blog.id}}" class="btn btn-outline-primary mx-2 w-25">Edit</a>
+        <a href="/delete/{{blog.id}}" class="btn btn-outline-danger w-25 ">Delete</a>
     </div>
 
 </div>

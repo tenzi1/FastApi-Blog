@@ -29,7 +29,7 @@ def update_blog(id: int, blog: UpdateBlog, author_id: int, db: Session):
     if not blog_in_db:
         return {"error": f"blog with id {id} does not exist."}
     if not blog_in_db.author_id == author_id:
-        return {"error": "Only the author cann modify the blog."}
+        return {"error": "Only the author can modify the blog."}
     blog_in_db.title = blog.title
     blog_in_db.content = blog.content
     db.add(blog_in_db)
